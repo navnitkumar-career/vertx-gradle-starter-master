@@ -1,0 +1,27 @@
+def profile=project.getProperties().containsKey('profile') ? project.getProperties().get('profile') : 'local'
+def confPath='src/main/resources/' + profile + '.json'
+def mainVerticleName = ext.mainVerticleName
+
+println 'Using config: "' + confPath + '" for ' + project.getName() + ' project'
+println 'Launching verticle ' + String.valueOf(mainVerticleName)
+
+// copy correct log4j.properties file
+processResources {
+    include "**/" + profile + "_log4j.properties"
+    rename {
+        'log4j.properties'
+    }
+}
+
+run {
+    args = [
+            'run', mainVerticleName,
+            "-conf", confPath,
+            "--redeploy=$project.ext.watchForChange",
+            "--launcher-class=$mainClassName",
+            "--on-redeploy=$project.ext.doOnChange",
+            // used for attaching remote debugger
+            profile.equals('local') ? "--java-opts" : "", profile.equals('local') ?
+                    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000" : ""
+    ]
+}
