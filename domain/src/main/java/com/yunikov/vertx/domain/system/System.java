@@ -1,6 +1,7 @@
 package com.yunikov.vertx.domain.system;
 
 import com.yunikov.vertx.domain.configs.GradleProperties;
+import io.github.pixee.security.BoundedLineReader;
 import io.vertx.core.Future;
 import io.vertx.core.VertxException;
 
@@ -35,7 +36,7 @@ public class System {
             final StringBuilder outputBuilder = new StringBuilder();
 
             String line;
-            while ((line = in.readLine()) != null) {
+            while ((line = BoundedLineReader.readLine(in, 1000000)) != null) {
                 outputBuilder.append(line);
             }
 
