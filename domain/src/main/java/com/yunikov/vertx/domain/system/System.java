@@ -1,6 +1,7 @@
 package com.yunikov.vertx.domain.system;
 
 import com.yunikov.vertx.domain.configs.GradleProperties;
+import io.github.pixee.security.SystemCommand;
 import io.vertx.core.Future;
 import io.vertx.core.VertxException;
 
@@ -30,7 +31,7 @@ public class System {
         final String hostname = java.lang.System.getenv("HOSTNAME");
 
         if (hostname == null) {
-            final Process p = Runtime.getRuntime().exec("hostname");
+            final Process p = SystemCommand.runCommand(Runtime.getRuntime(), "hostname");
             final BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             final StringBuilder outputBuilder = new StringBuilder();
 
